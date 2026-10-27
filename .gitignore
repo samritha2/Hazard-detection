@@ -1,0 +1,116 @@
+# ==============================================================================
+# HazardSense - Root .gitignore
+# Cross-Modal Construction Site Hazard Detection System
+# Multi-stack: React (Vite) + FastAPI (Python) + YOLOv8 + Flutter / Dart
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Node.js & Frontend (React / Vite)
+# ------------------------------------------------------------------------------
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+dist-ssr/
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Linters and build caches
+.oxlintcache
+.eslintcache
+.vite/
+
+# ------------------------------------------------------------------------------
+# Python & FastAPI
+# ------------------------------------------------------------------------------
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing & Coverage
+.pytest_cache/
+*/.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# ------------------------------------------------------------------------------
+# Database & Local Media Uploads
+# ------------------------------------------------------------------------------
+# Local SQLite database (auto-generated at runtime)
+*.db
+*.sqlite
+*.sqlite3
+backend/hazard_system.db
+backend/hazard_system.db-journal
+backend/hazard_system.db-wal
+backend/hazard_system.db-shm
+
+# Dynamic runtime media uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ------------------------------------------------------------------------------
+# Secrets & Environment Configurations
+# ------------------------------------------------------------------------------
+# Firebase Service Account secrets
+serviceAccountKey.json
+backend/serviceAccountKey.json
+# Allow template example file
+!backend/serviceAccountKey.example.json
+
+# Environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ------------------------------------------------------------------------------
+# Flutter & Dart (mobile_edge_app)
+# ------------------------------------------------------------------------------
+mobile_edge_app/.dart_tool/
+mobile_edge_app/.flutter-plugins
+mobile_edge_app/.flutter-plugins-dependencies
+mobile_edge_app/.packages
+mobile_edge_app/build/
+mobile_edge_app/.pub/
+mobile_edge_app/.pub-cache/
+.dart_tool/
+.packages
+
+# ------------------------------------------------------------------------------
+# IDE & Operating System
+# ------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~

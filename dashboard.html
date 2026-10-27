@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HALVF Safety Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e2e; color: #cdd6f4; text-align: center; margin: 0; padding: 20px; }
+        h1 { color: #89b4fa; }
+        .alert-box { border: 2px solid #f38ba8; background: #313244; padding: 20px; margin: 20px auto; width: 80%; max-width: 600px; border-radius: 12px; display: none; }
+        .alert-box.active { display: block; animation: pulse 1s infinite alternate; }
+        .hazard-title { color: #f38ba8; font-size: 24px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        img { max-width: 100%; border-radius: 8px; border: 2px solid #585b70; }
+        .status { padding: 10px; background: #313244; border-radius: 8px; display: inline-block; margin-bottom: 20px; color: #a6e3a1; font-weight: bold;}
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px #f38ba8; }
+            100% { box-shadow: 0 0 30px #f38ba8; border-color: #ffb4c5; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🚧 Live Safety Camera Feed</h1>
+    <div class="status" id="ws-status">Connecting to camera feed...</div>
+    
+    <div id="alertBox" class="alert-box">
+        <div class="hazard-title" id="hazardTitle">🚨 HAZARD DETECTED!</div>
+        <p id="hazardDetails">Details...</p>
+        <img id="hazardImage" src="" alt="Hazard Image">
+    </div>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8000/ws/live-feed");
+        const statusEl = document.getElementById("ws-status");
+        const alertBox = document.getElementById("alertBox");
+        const hazardTitle = document.getElementById("hazardTitle");
+        const hazardDetails = document.getElementById("hazardDetails");
+        const hazardImage = document.getElementById("hazardImage");
+
+        ws.onopen = () => {
+            statusEl.innerText = "🟢 Connected! Waiting for camera pictures...";
+            statusEl.style.color = "#a6e3a1";
+        };
+
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            console.log("Received:", msg);
+
+            if (msg.type === "NEW_INCIDENT") {
+                const data = msg.data;
+                // Show Alert
+                alertBox.className = "alert-box active";
+                hazardTitle.innerText = `🚨 ${data.hazard_type} DETECTED!`;
+                hazardDetails.innerText = `Severity: ${data.severity} | Time: ${new Date().toLocaleTimeString()}`;
+                
+                // Set image (backend saves it to /uploads)
+                if (data.image_url) {
+                    hazardImage.src = "http://localhost:8000" + data.image_url;
+                    hazardImage.style.display = "block";
+                } else {
+                    hazardImage.style.display = "none";
+                }
+
+                // Hide alert after 10 seconds if no new one comes
+                setTimeout(() => {
+                    alertBox.className = "alert-box";
+                }, 10000);
+            }
+        };
+
+        ws.onerror = () => {
+            statusEl.innerText = "🔴 Disconnected! Ensure backend is running.";
+            statusEl.style.color = "#f38ba8";
+        };
+        ws.onclose = ws.onerror;
+    </script>
+</body>
+</html>
